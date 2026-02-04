@@ -1,26 +1,47 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f1e7;
+  --foreground: #4a5234;
+  --sage-50: #f5f7f3;
+  --sage-100: #e3e8dd;
+  --sage-300: #c2cfb6;
+  --sage-500: #8ea47c;
+  --sage-700: #5f7353;
+  --olive-500: #68724a;
+  --olive-700: #4a5234;
+  --gold-200: #e9ddc4;
+  --gold-400: #d1b580;
+  --beige-50: #f7f1e7;
+  --beige-200: #e7d9c3;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-sage-50: var(--sage-50);
+  --color-sage-100: var(--sage-100);
+  --color-sage-300: var(--sage-300);
+  --color-sage-500: var(--sage-500);
+  --color-sage-700: var(--sage-700);
+
+  --color-olive-500: var(--olive-500);
+  --color-olive-700: var(--olive-700);
+
+  --color-gold-200: var(--gold-200);
+  --color-gold-400: var(--gold-400);
+
+  --color-beige-50: var(--beige-50);
+  --color-beige-200: var(--beige-200);
+
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
 }

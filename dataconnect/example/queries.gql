@@ -1,0 +1,53 @@
+mutation CreateInquiry($materialOfferingId: UUID!, $userId: UUID!, $inquiryType: String!, $message: String, $quantityRequested: Int!, $status: String!) @auth(level: USER) {
+  inquiry_insert(data: {
+    materialOfferingId: $materialOfferingId,
+    userId: $userId,
+    inquiryType: $inquiryType,
+    message: $message,
+    quantityRequested: $quantityRequested,
+    status: $status,
+    createdAt_expr: "request.time"
+  })
+}
+
+query GetMaterialOfferings @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  materialOfferings {
+    id
+    material {
+      name
+      description
+    }
+    supplier {
+      companyName
+      location
+    }
+    unitPrice
+    minOrderQuantity
+  }
+}
+
+mutation UpdateInquiryStatus($id: UUID!, $status: String!) @auth(level: USER) {
+  inquiry_update(
+    id: $id,
+    data: {
+      status: $status
+    }
+  )
+}
+
+query GetMyInquiries($userId: UUID!) @auth(level: USER) {
+  inquiries(where: {userId: {eq: $userId}}) {
+    id
+    materialOffering {
+      id
+      material {
+        name
+      }
+    }
+    createdAt
+    inquiryType
+    message
+    quantityRequested
+    status
+  }
+}

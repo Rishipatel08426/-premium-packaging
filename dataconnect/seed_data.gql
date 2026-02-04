@@ -1,0 +1,59 @@
+mutation CreateSeedData @transaction @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      email: "demouser1@example.com",
+      passwordHash: "passwordhash1",
+      userType: "buyer",
+      createdAt: "2024-03-15T12:00:00Z"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      email: "demouser2@example.com",
+      passwordHash: "passwordhash2",
+      userType: "supplier",
+      createdAt: "2024-03-15T12:00:00Z"
+    }
+  ])
+  supplier_insertMany(data: [
+    {
+      id: "650e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      companyName: "Demo Supplier 1",
+      location: "USA",
+      createdAt: "2024-03-15T12:00:00Z"
+    }
+  ])
+  material_insertMany(data: [
+    {
+      id: "750e8400-e29b-41d4-a716-446655440000",
+      name: "Demo Material 1",
+      description: "Example material",
+      materialType: "plastic",
+      degradationTime: "1 year",
+      createdAt: "2024-03-15T12:00:00Z"
+    }
+  ])
+  materialOffering_insertMany(data: [
+    {
+      id: "850e8400-e29b-41d4-a716-446655440000",
+      materialId: "750e8400-e29b-41d4-a716-446655440000",
+      supplierId: "650e8400-e29b-41d4-a716-446655440000",
+      minOrderQuantity: 100,
+      unitPrice: 10.0,
+      createdAt: "2024-03-15T12:00:00Z"
+    }
+  ])
+  inquiry_insertMany(data: [
+    {
+      id: "950e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      materialOfferingId: "850e8400-e29b-41d4-a716-446655440000",
+      inquiryType: "quote",
+      message: "Please provide a quote",
+      quantityRequested: 100,
+      status: "open",
+      createdAt: "2024-03-15T12:00:00Z"
+    }
+  ])
+}

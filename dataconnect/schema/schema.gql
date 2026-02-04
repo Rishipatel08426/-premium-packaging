@@ -1,0 +1,55 @@
+type User @table {
+  email: String!
+  passwordHash: String!
+  userType: String!
+  createdAt: Timestamp!
+  companyName: String
+  contactPerson: String
+  phoneNumber: String
+  website: String
+  description: String
+  industry: String
+}
+
+type Material @table {
+  name: String!
+  materialType: String!
+  degradationTime: String!
+  description: String!
+  createdAt: Timestamp!
+  keyProperties: [String]
+  certifications: [String]
+  imageUrl: String
+}
+
+type Supplier @table {
+  user: User
+  companyName: String!
+  location: String!
+  createdAt: Timestamp!
+  productionCapacity: String
+  certifications: [String]
+  website: String
+  mainContactEmail: String
+}
+
+type MaterialOffering @table {
+  material: Material
+  supplier: Supplier
+  unitPrice: Float!
+  minOrderQuantity: Int!
+  createdAt: Timestamp!
+  leadTimeDays: Int
+  customizationOptions: String
+  additionalNotes: String
+}
+
+type Inquiry @table {
+  user: User
+  materialOffering: MaterialOffering
+  inquiryType: String!
+  status: String!
+  createdAt: Timestamp!
+  message: String
+  quantityRequested: Int
+}
