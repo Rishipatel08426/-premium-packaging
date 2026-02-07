@@ -17,7 +17,7 @@ const bodyFont = Inter({
 export const metadata: Metadata = {
   title: "Areca Studio | Premium Sustainable Packaging",
   description:
-    "Premium areca leaf boxes, plates, bowls and bottles for modern sustainable brands.",
+    "Premium areca leaf plates, bowls, trays and boxes for food packaging  made from naturally fallen leaf sheaths, designed to break down under composting conditions, with optional tested food-grade barrier linings for sensitive markets.",
 };
 
 export default function RootLayout({

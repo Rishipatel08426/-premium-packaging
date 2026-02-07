@@ -6,8 +6,9 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -24,7 +25,21 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const result = await signInWithEmailAndPassword(auth, email, password);
+
+      if (result.user) {
+        const userRef = doc(db, "users", result.user.uid);
+        await setDoc(
+          userRef,
+          {
+            displayName: result.user.displayName,
+            email: result.user.email,
+            provider: "password",
+            lastLoginAt: new Date().toISOString(),
+          },
+          { merge: true },
+        );
+      }
       router.push("/");
     } catch (err: unknown) {
       console.error(err);
@@ -39,7 +54,21 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+
+      if (result.user) {
+        const userRef = doc(db, "users", result.user.uid);
+        await setDoc(
+          userRef,
+          {
+            displayName: result.user.displayName,
+            email: result.user.email,
+            provider: "google",
+            lastLoginAt: new Date().toISOString(),
+          },
+          { merge: true },
+        );
+      }
       router.push("/");
     } catch (err: unknown) {
       console.error(err);

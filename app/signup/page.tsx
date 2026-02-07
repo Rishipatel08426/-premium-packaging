@@ -1,9 +1,15 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -12,6 +18,8 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const googleProvider = new GoogleAuthProvider();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,10 +37,53 @@ export default function SignupPage() {
         await updateProfile(credentials.user, { displayName: brandName });
       }
 
+      if (credentials.user) {
+        const userRef = doc(db, "users", credentials.user.uid);
+        await setDoc(
+          userRef,
+          {
+            displayName: brandName || credentials.user.displayName || null,
+            email: credentials.user.email,
+            provider: "password",
+            createdAt: new Date().toISOString(),
+          },
+          { merge: true },
+        );
+      }
+
       router.push("/");
     } catch (err: unknown) {
       console.error(err);
       setError("Unable to create an account. Please review your details.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+
+      if (result.user) {
+        const userRef = doc(db, "users", result.user.uid);
+        await setDoc(
+          userRef,
+          {
+            displayName: result.user.displayName,
+            email: result.user.email,
+            provider: "google",
+            createdAt: new Date().toISOString(),
+          },
+          { merge: true },
+        );
+      }
+      router.push("/");
+    } catch (err: unknown) {
+      console.error(err);
+      setError("Unable to continue with Google. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -97,6 +148,20 @@ export default function SignupPage() {
           {isLoading ? "Creating account..." : "Create account"}
         </button>
       </form>
+      <div className="mt-4 flex items-center gap-3 text-[11px] text-olive-700/60">
+        <div className="h-px flex-1 bg-sage-100" />
+        <span>or</span>
+        <div className="h-px flex-1 bg-sage-100" />
+      </div>
+      <button
+        type="button"
+        onClick={handleGoogleSignIn}
+        disabled={isLoading}
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-olive-700/30 bg-beige-50/80 px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-olive-700 transition-colors hover:border-olive-700 hover:text-olive-700 disabled:opacity-60"
+      >
+        <span className="h-4 w-4 rounded-full bg-olive-700/10" />
+        Continue with Google
+      </button>
       <p className="mt-4 text-xs text-olive-700/70">
         Already working with us? <a href="/login" className="underline">Log in to your studio</a>.
       </p>
